@@ -67,7 +67,15 @@ import { VocabularyService } from '../../core/services/vocabulary.service';
         <section class="w-full md:w-3/4 flex flex-col">
           
           <!-- Search Bar (Spotlight Style) -->
-          <div class="mb-10 animate-fade-in-up" [ngClass]="{'mt-24 md:mt-32': !hasSearched}">
+          <div class="mb-10 animate-fade-in-up" [ngClass]="{'mt-16 md:mt-24': !hasSearched}">
+            
+            <!-- Branding Header above Search Bar (Only shown before search) -->
+            <div *ngIf="!hasSearched" class="flex flex-col items-center gap-4 mb-8">
+              <img src="assets/logo_satori.png" alt="Satori Logo" class="w-20 h-20 rounded-[1.5rem] shadow-2xl shadow-indigo-500/20 border border-white/10 animate-pulse-slow">
+              <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">Satori Dictionary</h1>
+              <p class="text-slate-400 font-medium text-sm">Translate and build your vocabulary list</p>
+            </div>
+
             <div class="relative w-full max-w-3xl mx-auto">
               <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
                      class="w-full pl-8 pr-16 py-6 rounded-[2rem] bg-black/40 backdrop-blur-3xl border border-indigo-500/30 text-2xl text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-2xl shadow-indigo-900/20" 
