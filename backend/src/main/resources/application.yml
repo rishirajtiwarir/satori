@@ -5,7 +5,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://dpg-d9dtt6v41pts73dtbbp0-a.ohio-postgres.render.com/satori_db_enjz
+    url: jdbc:postgresql://dpg-d9dtt6v41pts73dtbbp0-a.ohio-postgres.render.com/satori_db_enjz?sslmode=require
     username: satori_db_enjz_user
     password: Mgm83LCbVDuyFNA8f1tMUMvuvddRV05f
     driver-class-name: org.postgresql.Driver
