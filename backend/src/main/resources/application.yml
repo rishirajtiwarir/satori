@@ -5,10 +5,10 @@ spring:
   application:
     name: backend
   datasource:
-    url: ${DB_URL:jdbc:h2:file:./data/nihongo_master}
-    username: ${DB_USER:root}
-    password: ${DB_PASSWORD:Rishi@123}
-    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+    url: jdbc:postgresql://dpg-d9dtt6v41pts73dtbbp0-a.ohio-postgres.render.com/satori_db_enjz
+    username: satori_db_enjz_user
+    password: Mgm83LCbVDuyFNA8f1tMUMvuvddRV05f
+    driver-class-name: org.postgresql.Driver
   h2:
     console:
       enabled: true
@@ -20,7 +20,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: ${DB_DIALECT:org.hibernate.dialect.H2Dialect}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: false
 
