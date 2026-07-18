@@ -1,0 +1,35 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Electric Blue Gradient -->
+    <linearGradient id="gradTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="100%" stop-color="#4facfe" />
+    </linearGradient>
+    
+    <!-- Deep Indigo / Purple Gradient -->
+    <linearGradient id="gradBottom" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#667eea" />
+      <stop offset="100%" stop-color="#764ba2" />
+    </linearGradient>
+
+    <!-- Glowing effect -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Premium Dark Matte Background -->
+  <rect width="400" height="400" rx="90" fill="#0b0f19" />
+  
+  <g filter="url(#glow)">
+    <!-- Top abstract 'S' curve (Origami style) -->
+    <path d="M 260 90 L 140 90 L 100 150 L 220 150 L 260 210" fill="none" stroke="url(#gradTop)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Bottom abstract 'S' curve -->
+    <path d="M 140 190 L 260 250 L 300 310 L 180 310 L 140 250" fill="none" stroke="url(#gradBottom)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Center connecting diamond -->
+    <polygon points="200,160 240,200 200,240 160,200" fill="#38bdf8" opacity="0.9" />
+  </g>
+</svg>
