@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://dpg-d9dtt6v41pts73dtbbp0-a.ohio-postgres.render.com:5432/satori_db_emjz?sslmode=require
     username: satori_db_emjz_user
-    password: "Mgm83LCbVDuyFNA8f1t+MUMvuvddRV05f"
+    password: "Mgm83LCbVDuyENA8f1tMUMvuvddBV05f"
     driver-class-name: org.postgresql.Driver
   h2:
     console:
