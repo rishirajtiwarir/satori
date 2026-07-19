@@ -154,11 +154,19 @@ export class QuizComponent implements OnInit {
   }
 
   setupQuiz(data: QuizQuestion[]) {
-    this.questions = data;
+    this.questions = this.shuffleArray([...data]);
     this.currentIndex = 0;
     this.currentScore = 0;
     this.quizComplete = false;
     this.loadQuestion();
+  }
+
+  private shuffleArray(array: any[]): any[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
   loadQuestion() {

@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: backend
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   datasource:
     url: jdbc:postgresql://dpg-d9dtt6v41pts73dtbbp0-a.ohio-postgres.render.com:5432/satori_db_emjz?sslmode=require
     username: satori_db_emjz_user

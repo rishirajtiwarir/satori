@@ -13,7 +13,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   imports: [CommonModule, FormsModule, SafePipe, AnimatedBackgroundComponent, RouterLink],
   template: `
     <div class="min-h-screen bg-slate-950 text-white flex flex-col font-sans relative overflow-hidden">
-      
       <app-animated-background></app-animated-background>
 
       <!-- Navbar -->
@@ -27,10 +26,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
           </span>
         </a>
         <div class="flex items-center gap-4">
-          <a href="https://drive.google.com/drive/folders/1ADNQA100A9kuAJbq7ooOpziFqHSh1S_O?usp=sharing" target="_blank" class="px-5 py-2.5 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold hover:bg-indigo-500/40 hover:text-white transition-all shadow-sm shadow-indigo-500/20 flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Download Papers
-          </a>
           <button (click)="generateQuiz()" [disabled]="!pdfFile || isGenerating" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
             <span *ngIf="isGenerating" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             <svg *ngIf="!isGenerating" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -41,7 +36,26 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
       <main class="relative z-10 flex-grow flex w-full pt-20 h-screen overflow-hidden">
         
-        <!-- Left: Dropzone & PDF Viewer -->
+        <!-- Left: Paper Library Sidebar -->
+        <div class="w-72 bg-slate-900/80 border-r border-white/10 backdrop-blur-xl h-full flex flex-col p-6 shadow-[10px_0_30px_rgba(0,0,0,0.5)]">
+          <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-blue-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            Paper Library
+          </h3>
+          <div class="flex-1 overflow-y-auto space-y-3 scrollbar-hide pr-2">
+            <button *ngFor="let paper of builtInPapers" (click)="loadBuiltInPaper(paper)"
+                    class="w-full text-left p-4 rounded-xl border transition-all flex flex-col gap-1 shadow-sm"
+                    [ngClass]="activePaper?.id === paper.id ? 'bg-blue-500/20 border-blue-500/50 text-white' : 'bg-slate-800/50 border-white/5 text-slate-300 hover:bg-slate-700/50 hover:border-white/10'">
+              <span class="font-bold">{{ paper.name }}</span>
+              <span class="text-xs opacity-70">{{ paper.description }}</span>
+            </button>
+          </div>
+          <div class="mt-6 pt-4 border-t border-white/10 text-xs text-slate-500 text-center">
+            Place more PDFs in <br/><code class="text-slate-400">assets/papers/</code>
+          </div>
+        </div>
+
+        <!-- Middle: Dropzone & PDF Viewer -->
         <div class="flex-1 flex flex-col p-6 h-full relative" 
              (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
           
@@ -54,13 +68,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
             <div class="w-24 h-24 rounded-full bg-indigo-500/20 flex items-center justify-center mb-6 shadow-inner shadow-indigo-500/20">
               <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
             </div>
-            <h2 class="text-3xl font-bold mb-2">Import Examination Paper</h2>
+            <h2 class="text-3xl font-bold mb-2">Select or Import Paper</h2>
             <p class="text-slate-400 text-center max-w-md mb-8">
-              Drag & drop a PDF paper here or click to browse. We will render it for reading and you can generate a quiz from it.
+              Select a paper from the library on the left, or drag & drop your own PDF here.
             </p>
             <input type="file" id="pdfUpload" class="hidden" accept="application/pdf" (change)="onFileSelected($event)">
             <label for="pdfUpload" class="px-8 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold cursor-pointer transition-all border border-white/10 shadow-sm">
-              Browse Files
+              Browse Local Files
             </label>
           </div>
 
@@ -124,6 +138,12 @@ export class PreviousPapersComponent {
   isSearching = false;
   hasSearched = false;
   dictionaryResults: any[] = [];
+  
+  builtInPapers = [
+    { id: 1, name: 'Sample JLPT N5', description: 'Practice Reading Section', filename: 'dummy.pdf' },
+    { id: 2, name: 'JLPT N4 Past Paper', description: 'Vocab & Reading', filename: 'n4.pdf' }
+  ];
+  activePaper: any = null;
 
   constructor(
     private router: Router,
@@ -156,12 +176,14 @@ export class PreviousPapersComponent {
     
     if (event.dataTransfer && event.dataTransfer.files.length > 0) {
       const file = event.dataTransfer.files[0];
+      this.activePaper = null;
       this.handleFile(file);
     }
   }
 
   onFileSelected(event: any) {
     if (event.target.files && event.target.files.length > 0) {
+      this.activePaper = null;
       this.handleFile(event.target.files[0]);
     }
   }
@@ -175,10 +197,31 @@ export class PreviousPapersComponent {
       alert('Please upload a valid PDF file.');
     }
   }
+  
+  async loadBuiltInPaper(paper: any) {
+    this.activePaper = paper;
+    this.pdfUrl = null; // show loading state briefly
+    this.pdfFile = null;
+    try {
+      const response = await fetch('/assets/papers/' + paper.filename);
+      if (!response.ok) {
+        alert('Could not load this paper. Ensure it is placed in assets/papers directory.');
+        this.activePaper = null;
+        return;
+      }
+      const blob = await response.blob();
+      const file = new File([blob], paper.filename, { type: 'application/pdf' });
+      this.handleFile(file);
+    } catch (e) {
+      alert('Failed to fetch the paper.');
+      this.activePaper = null;
+    }
+  }
 
   clearPdf() {
     this.pdfUrl = null;
     this.pdfFile = null;
+    this.activePaper = null;
   }
 
   async searchDictionary() {
@@ -224,7 +267,7 @@ export class PreviousPapersComponent {
       },
       error: (err) => {
         this.isGenerating = false;
-        alert('Failed to generate quiz: ' + err.message);
+        alert('Failed to generate quiz. Make sure the file is not too large and is a valid PDF.');
       }
     });
   }
