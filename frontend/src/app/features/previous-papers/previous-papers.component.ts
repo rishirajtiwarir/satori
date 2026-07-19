@@ -29,7 +29,7 @@ import * as pdfjsLib from 'pdfjs-dist';
           <button (click)="generateQuiz()" [disabled]="!extractedText || isGenerating" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
             <span *ngIf="isGenerating" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             <svg *ngIf="!isGenerating" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-            {{ isGenerating ? 'Extracting...' : 'Generate Quiz' }}
+            {{ isGenerating ? 'Generating...' : 'Generate Quiz' }}
           </button>
         </div>
       </nav>
@@ -245,7 +245,7 @@ export class PreviousPapersComponent implements OnInit {
           
           // Basic text extraction without complex positional logic
           const pageStrings = textContent.items.map((item: any) => item.str);
-          fullText += pageStrings.join(' ') + '\\n\\n';
+          fullText += pageStrings.join(' ') + '\n\n';
         }
         
         this.extractedText = fullText.trim();
