@@ -49,6 +49,13 @@ export class QuizService {
     );
   }
 
+  generateQuizFromText(text: string, sourceName: string = 'Extracted Text'): Observable<number> {
+    const payload = { text, sourceName };
+    return this.http.post<any>(`${this.apiUrl}/generate-from-text`, payload, { headers: this.getHeaders() }).pipe(
+      map(res => res.id)
+    );
+  }
+
   getQuizById(id: number): Observable<QuizQuestion[]> {
     return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       map(res => {

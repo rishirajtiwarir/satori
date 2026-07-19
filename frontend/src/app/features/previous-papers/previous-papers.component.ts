@@ -1,11 +1,11 @@
-import { Component, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SafePipe } from '../../shared/pipes/safe.pipe';
 import { AnimatedBackgroundComponent } from '../../shared/components/animated-background/animated-background.component';
 import { QuizService } from '../../core/services/quiz.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import * as pdfjsLib from 'pdfjs-dist';
 
 @Component({
   selector: 'app-previous-papers',
@@ -26,7 +26,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
           </span>
         </a>
         <div class="flex items-center gap-4">
-          <button (click)="generateQuiz()" [disabled]="!pdfFile || isGenerating" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+          <button (click)="generateQuiz()" [disabled]="!extractedText || isGenerating" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
             <span *ngIf="isGenerating" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             <svg *ngIf="!isGenerating" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             {{ isGenerating ? 'Extracting...' : 'Generate Quiz' }}
@@ -43,6 +43,19 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
             Paper Library
           </h3>
           <div class="flex-1 overflow-y-auto space-y-3 scrollbar-hide pr-2">
+            
+            <!-- Google Drive Button -->
+            <a href="https://drive.google.com/drive/folders/1ADNQA100A9kuAJbq7ooOpziFqHSh1S_O?usp=sharing" target="_blank" rel="noopener noreferrer" 
+               class="w-full text-left p-4 rounded-xl border transition-all flex flex-col gap-1 shadow-sm bg-blue-500/10 border-blue-400/30 text-blue-300 hover:bg-blue-500/20 hover:border-blue-400/50 mb-6">
+              <span class="font-bold flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71,3.5L1.15,15L4.58,21L11.13,9.5M9.73,15L6.3,21H19.42L22.85,15M22.28,14L15.72,2.5H8.85L15.42,14H22.28Z" /></svg>
+                Open Google Drive
+              </span>
+              <span class="text-xs opacity-80">Download past papers to drag & drop</span>
+            </a>
+            
+            <div class="h-px bg-white/10 w-full mb-3"></div>
+
             <button *ngFor="let paper of builtInPapers" (click)="loadBuiltInPaper(paper)"
                     class="w-full text-left p-4 rounded-xl border transition-all flex flex-col gap-1 shadow-sm"
                     [ngClass]="activePaper?.id === paper.id ? 'bg-blue-500/20 border-blue-500/50 text-white' : 'bg-slate-800/50 border-white/5 text-slate-300 hover:bg-slate-700/50 hover:border-white/10'">
@@ -50,12 +63,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
               <span class="text-xs opacity-70">{{ paper.description }}</span>
             </button>
           </div>
-          <div class="mt-6 pt-4 border-t border-white/10 text-xs text-slate-500 text-center">
-            Place more PDFs in <br/><code class="text-slate-400">assets/papers/</code>
-          </div>
         </div>
 
-        <!-- Middle: Dropzone & PDF Viewer -->
+        <!-- Middle: Dropzone & Extracted Text Viewer -->
         <div class="flex-1 flex flex-col p-6 h-full relative" 
              (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
           
@@ -64,26 +74,40 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
           </div>
 
           <!-- Empty State -->
-          <div *ngIf="!pdfUrl" class="w-full h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col items-center justify-center border-dashed border-2 hover:border-indigo-500/50 transition-colors">
+          <div *ngIf="!extractedText && !isExtracting" class="w-full h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col items-center justify-center border-dashed border-2 hover:border-indigo-500/50 transition-colors">
             <div class="w-24 h-24 rounded-full bg-indigo-500/20 flex items-center justify-center mb-6 shadow-inner shadow-indigo-500/20">
               <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
             </div>
-            <h2 class="text-3xl font-bold mb-2">Select or Import Paper</h2>
+            <h2 class="text-3xl font-bold mb-2">Drop Paper to Extract Text</h2>
             <p class="text-slate-400 text-center max-w-md mb-8">
-              Select a paper from the library on the left, or drag & drop your own PDF here.
+              We extract the text directly in your browser. This means <b>no file size limits</b> and no uploading bulky PDFs!
             </p>
             <input type="file" id="pdfUpload" class="hidden" accept="application/pdf" (change)="onFileSelected($event)">
             <label for="pdfUpload" class="px-8 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold cursor-pointer transition-all border border-white/10 shadow-sm">
               Browse Local Files
             </label>
           </div>
+          
+          <!-- Extracting State -->
+          <div *ngIf="isExtracting" class="w-full h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col items-center justify-center">
+             <div class="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+             <h2 class="text-xl font-bold">Reading PDF...</h2>
+             <p class="text-slate-400 text-sm mt-2 text-center">Parsing pages to plain text</p>
+          </div>
 
-          <!-- PDF Viewer -->
-          <div *ngIf="pdfUrl" class="w-full h-full rounded-3xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl flex relative">
-            <button (click)="clearPdf()" class="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-rose-500/80 text-white flex items-center justify-center hover:bg-rose-500 transition-colors shadow-lg backdrop-blur-md">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <iframe [src]="pdfUrl | safe" class="w-full h-full border-0"></iframe>
+          <!-- Text Viewer -->
+          <div *ngIf="extractedText && !isExtracting" class="w-full h-full rounded-3xl overflow-hidden bg-white/5 border border-white/10 shadow-2xl flex flex-col relative">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-slate-900/50">
+              <h3 class="font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Extracted Text ({{ activePaperName }})
+              </h3>
+              <button (click)="clearPdf()" class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            </div>
+            <!-- Using a text area so user can see it normally and even edit/fix parsing mistakes before generating quiz -->
+            <textarea [(ngModel)]="extractedText" class="w-full flex-1 bg-transparent border-0 p-6 text-slate-300 font-medium resize-none focus:ring-0 leading-relaxed scrollbar-hide" spellcheck="false"></textarea>
           </div>
         </div>
 
@@ -128,11 +152,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     </div>
   `
 })
-export class PreviousPapersComponent {
-  pdfUrl: string | null = null;
-  pdfFile: File | null = null;
+export class PreviousPapersComponent implements OnInit {
   isDragging = false;
   isGenerating = false;
+  isExtracting = false;
+  
+  extractedText: string = '';
+  activePaperName: string = 'Custom PDF';
   
   searchQuery = '';
   isSearching = false;
@@ -149,6 +175,11 @@ export class PreviousPapersComponent {
     private router: Router,
     private quizService: QuizService
   ) {}
+
+  ngOnInit() {
+    // Configure pdfjs worker to use CDN to avoid bundling issues
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
 
   @HostListener('window:dragover', ['$event'])
   onWindowDragOver(event: DragEvent) {
@@ -190,37 +221,76 @@ export class PreviousPapersComponent {
 
   handleFile(file: File) {
     if (file.type === 'application/pdf') {
-      this.pdfFile = file;
-      const objectUrl = URL.createObjectURL(file);
-      this.pdfUrl = objectUrl;
+      this.activePaperName = file.name;
+      this.extractTextFromPdf(file);
     } else {
       alert('Please upload a valid PDF file.');
     }
   }
   
+  async extractTextFromPdf(file: File) {
+    this.isExtracting = true;
+    this.extractedText = '';
+    
+    const reader = new FileReader();
+    reader.onload = async (e: any) => {
+      try {
+        const typedarray = new Uint8Array(e.target.result);
+        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+        
+        let fullText = '';
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          
+          // Basic text extraction without complex positional logic
+          const pageStrings = textContent.items.map((item: any) => item.str);
+          fullText += pageStrings.join(' ') + '\\n\\n';
+        }
+        
+        this.extractedText = fullText.trim();
+        this.isExtracting = false;
+      } catch (err) {
+        console.error('Error parsing PDF:', err);
+        alert('Failed to extract text from PDF. It might be corrupted or protected.');
+        this.isExtracting = false;
+      }
+    };
+    
+    reader.onerror = () => {
+      alert('Failed to read file.');
+      this.isExtracting = false;
+    };
+    
+    reader.readAsArrayBuffer(file);
+  }
+  
   async loadBuiltInPaper(paper: any) {
     this.activePaper = paper;
-    this.pdfUrl = null; // show loading state briefly
-    this.pdfFile = null;
+    this.extractedText = '';
+    this.activePaperName = paper.name;
+    this.isExtracting = true;
+    
     try {
       const response = await fetch('/assets/papers/' + paper.filename);
       if (!response.ok) {
         alert('Could not load this paper. Ensure it is placed in assets/papers directory.');
         this.activePaper = null;
+        this.isExtracting = false;
         return;
       }
       const blob = await response.blob();
       const file = new File([blob], paper.filename, { type: 'application/pdf' });
-      this.handleFile(file);
+      this.extractTextFromPdf(file);
     } catch (e) {
       alert('Failed to fetch the paper.');
       this.activePaper = null;
+      this.isExtracting = false;
     }
   }
 
   clearPdf() {
-    this.pdfUrl = null;
-    this.pdfFile = null;
+    this.extractedText = '';
     this.activePaper = null;
   }
 
@@ -256,10 +326,12 @@ export class PreviousPapersComponent {
   }
 
   generateQuiz() {
-    if (!this.pdfFile) return;
+    if (!this.extractedText) return;
     
     this.isGenerating = true;
-    this.quizService.generateQuizFromPdf(this.pdfFile).subscribe({
+    
+    // Now we send just the TEXT, completely bypassing any PDF size limits!
+    this.quizService.generateQuizFromText(this.extractedText, this.activePaperName).subscribe({
       next: (quizId) => {
         this.isGenerating = false;
         // Navigate to quiz with ID
@@ -267,7 +339,7 @@ export class PreviousPapersComponent {
       },
       error: (err) => {
         this.isGenerating = false;
-        alert('Failed to generate quiz. Make sure the file is not too large and is a valid PDF.');
+        alert('Failed to generate quiz from text. The backend might be unreachable.');
       }
     });
   }
