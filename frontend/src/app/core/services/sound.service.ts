@@ -99,32 +99,52 @@ export class SoundService {
     });
   }
 
-  // Play a welcome speech followed by a chime
-  playWelcomeSequence() {
+  // Play a welcome speech in a calm English female voice with a dramatic pause
+  playCalmEnglishWelcome(onChime: () => void) {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      const msg = new SpeechSynthesisUtterance("Welcome to your Japanese journey. Discover your Satori.");
-      
-      // Find a Japanese voice to give it the requested accent
       const voices = window.speechSynthesis.getVoices();
-      const jpVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JP'));
-      if (jpVoice) {
-        msg.voice = jpVoice;
-      } else {
-        msg.lang = 'en-US';
+      
+      // Try to find a good female English voice (Zira, Google UK Female, Samantha, etc.)
+      let selectedVoice = voices.find(v => 
+        (v.lang.includes('en') && (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Victoria')))
+      );
+      
+      // Fallback to any English voice if a specific female one isn't found
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
       }
-      
-      msg.rate = 0.9; // Slightly slower for dramatic effect
-      msg.pitch = 1.1;
-      
-      msg.onend = () => {
-        // Play "Tun tun tana" chime after speech
-        this.playWelcomeChime();
+
+      const speakSentence = (text: string, onEnd?: () => void) => {
+        const msg = new SpeechSynthesisUtterance(text);
+        if (selectedVoice) msg.voice = selectedVoice;
+        else msg.lang = 'en-US';
+        
+        msg.rate = 0.85; // Slower for a calm, soothing effect
+        msg.pitch = 1.1; // Slightly higher pitch for female tone if default voice is used
+        
+        if (onEnd) {
+          msg.onend = () => {
+            // Chrome bug workaround: wait a tiny bit before triggering next action
+            setTimeout(() => onEnd(), 50);
+          };
+        }
+        window.speechSynthesis.speak(msg);
       };
-      
-      window.speechSynthesis.speak(msg);
+
+      // Play first sentence
+      speakSentence("Welcome to your Japanese journey.", () => {
+        // Dramatic pause
+        setTimeout(() => {
+          // Play second sentence
+          speakSentence("Discover your Satori.", () => {
+            onChime();
+          });
+        }, 800);
+      });
+
     } else {
       // Fallback if no speech synthesis
-      this.playWelcomeChime();
+      onChime();
     }
   }
 
