@@ -122,35 +122,36 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
         <div class="relative z-10 max-w-3xl mb-12 animate-fade-in-left">
 
           <!-- Top Label -->
-          <div class="flex items-center gap-2 mb-5">
-            <span class="w-8 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></span>
-            <span class="text-xs font-bold tracking-[0.3em] text-cyan-400 uppercase">Japanese Learning Platform</span>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-8 h-[2px] bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"></span>
+            <span class="text-xs font-bold tracking-[0.3em] text-blue-400 uppercase">Japanese Learning Platform</span>
           </div>
 
-          <!-- Main Headline -->
-          <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-5 leading-tight">
-            <span class="text-white drop-shadow-lg">あなたの</span>
-            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]">
+          <!-- Main Headline — only 日本語の旅 -->
+          <h1 class="mb-3 leading-tight">
+            <span class="block text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-indigo-400 to-violet-400 drop-shadow-[0_0_40px_rgba(99,102,241,0.35)] tracking-tight">
               日本語の旅
             </span>
-            <span class="text-2xl md:text-3xl font-semibold text-slate-300 tracking-wide">Your Japanese Journey</span>
+            <span class="block text-xl md:text-2xl font-semibold text-slate-400 tracking-widest mt-2">
+              Your Japanese Journey
+            </span>
           </h1>
 
           <!-- Subtitle -->
-          <p class="text-base md:text-lg text-slate-400 font-medium max-w-xl mb-8 leading-relaxed">
-            Master JLPT from N5 to N1. Immerse in authentic passages, build vocabulary,<br class="hidden md:block"> and track your progress every day.
+          <p class="text-sm md:text-base text-slate-500 font-medium max-w-lg mb-8 leading-relaxed">
+            Master JLPT from N5 to N1 — authentic passages, smart vocabulary, daily progress tracking.
           </p>
           
           <!-- CTA Buttons -->
           <div class="flex gap-3 flex-wrap">
             <button routerLink="/passage-reader"
-              class="px-7 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base hover:from-cyan-400 hover:to-blue-500 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95 duration-200">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+              class="px-7 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold text-sm hover:from-blue-400 hover:to-indigo-500 transition-all flex items-center gap-2 shadow-lg shadow-indigo-500/30 hover:scale-105 active:scale-95 duration-200">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
               Start Studying
             </button>
             <button (click)="openAbout()"
-              class="px-7 py-3 rounded-2xl bg-white/5 backdrop-blur-md text-white font-bold text-base hover:bg-white/10 transition-all border border-white/10 flex items-center gap-2 hover:scale-105 active:scale-95 duration-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              class="px-7 py-3 rounded-2xl bg-white/5 backdrop-blur-md text-slate-300 font-bold text-sm hover:bg-white/10 hover:text-white transition-all border border-white/10 flex items-center gap-2 hover:scale-105 active:scale-95 duration-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               More Info
             </button>
           </div>
