@@ -337,16 +337,23 @@ export class LoginComponent implements OnInit {
             // Wait a tiny bit for the animation to start, then speak
             setTimeout(() => {
               // The SpeechService automatically picks the Japanese voice (from settings/fallback)
-              this.speechService.speak("Welcome to your Japanese journey. Discover your Satori.", () => {
-                // When speaking ends, play the chime
-                this.soundService.playWelcomeChime();
+              this.speechService.speak("Welcome to your Japanese journey.", () => {
+                
+                // Dramatic pause before the second sentence
+                setTimeout(() => {
+                  this.speechService.speak("Discover your Satori.", () => {
+                    // When speaking ends, play the chime
+                    this.soundService.playWelcomeChime();
+                  });
+                }, 800); // 800ms pause
+
               });
             }, 500);
 
-            // Redirect after 4 seconds of animation (give enough time for voice + chime)
+            // Redirect after enough time for voice + pause + voice + chime
             setTimeout(() => {
               this.router.navigate(['/dashboard']);
-            }, 4000);
+            }, 5500);
           }, 800);
         },
         error: (err) => {
