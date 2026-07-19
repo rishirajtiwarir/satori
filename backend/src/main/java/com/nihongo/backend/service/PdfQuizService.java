@@ -42,6 +42,10 @@ public class PdfQuizService {
             }
         }
         
+        if (validWords.isEmpty()) {
+            throw new Exception("No valid Japanese words found in the extracted text. The PDF might contain only English/numbers or be unreadable.");
+        }
+        
         // Shuffle and limit to 10 questions max to not overwhelm
         Collections.shuffle(validWords);
         int limit = Math.min(10, validWords.size());
@@ -77,14 +81,28 @@ public class PdfQuizService {
         List<String> options = new ArrayList<>();
         options.add(target.getReading()); // Correct option
         
-        // Generate 3 wrong options
+        // Generate 3 wrong options safely without infinite loop
         Set<String> wrongOptions = new HashSet<>();
-        while (wrongOptions.size() < 3 && wrongOptions.size() < allWords.size() - 1) {
+        int attempts = 0;
+        int maxAttempts = 50; // Prevent infinite loop if not enough unique readings exist
+        while (wrongOptions.size() < 3 && wrongOptions.size() < allWords.size() - 1 && attempts < maxAttempts) {
+            attempts++;
             AnalyzerService.ExtractedWord randWord = allWords.get(random.nextInt(allWords.size()));
-            if (!randWord.getReading().equals(target.getReading()) && !wrongOptions.contains(randWord.getReading())) {
+            if (randWord.getReading() != null && !randWord.getReading().equals(target.getReading()) && !wrongOptions.contains(randWord.getReading())) {
                 wrongOptions.add(randWord.getReading());
             }
         }
+        
+        // If we still couldn't find 3 wrong options, just add some dummy options
+        String[] fallbackOptions = {"あ", "い", "う", "え", "お"};
+        int fallbackIndex = 0;
+        while (wrongOptions.size() < 3 && fallbackIndex < fallbackOptions.length) {
+             String fb = fallbackOptions[fallbackIndex++];
+             if (!fb.equals(target.getReading()) && !wrongOptions.contains(fb)) {
+                 wrongOptions.add(fb);
+             }
+        }
+        
         options.addAll(wrongOptions);
         Collections.shuffle(options);
         
