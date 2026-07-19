@@ -114,23 +114,52 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
       <div *ngIf="step === 'animating'" class="fixed inset-0 z-[200] bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
         
         <!-- Glowing Ambient Portals -->
-        <div class="absolute w-[500px] h-[500px] rounded-full bg-indigo-500/10 blur-[120px] animate-pulse"></div>
-        <div class="absolute w-[300px] h-[300px] rounded-full bg-pink-500/10 blur-[100px] animate-pulse-slow"></div>
+        <div class="absolute w-[500px] h-[500px] rounded-full bg-blue-600/10 blur-[120px] animate-pulse"></div>
+        <div class="absolute w-[300px] h-[300px] rounded-full bg-cyan-500/10 blur-[100px] animate-pulse-slow"></div>
 
-        <!-- Logo Container -->
-        <div class="relative flex flex-col items-center justify-center z-10 scale-[0.8] md:scale-[1]">
+        <!-- Logo Container with SVG Spinner -->
+        <div class="relative flex flex-col items-center justify-center z-10">
           
-          <!-- Outer Pulsing Border Ring -->
-          <div class="absolute -inset-8 rounded-full border border-indigo-500/30 animate-ping opacity-75"></div>
-          <div class="absolute -inset-4 rounded-full border border-pink-500/20 animate-spin-slow"></div>
+          <!-- SVG Spinner Ring wrapper -->
+          <div class="relative flex items-center justify-center w-52 h-52">
 
-          <!-- Logo Image -->
-          <img src="assets/logo_satori.png" alt="Satori Logo" 
-               class="w-32 h-32 rounded-[2.5rem] shadow-[0_0_50px_rgba(99,102,241,0.5)] border border-white/20 object-cover animate-logo-entrance">
+            <!-- Outer Spinning Arc (Blue Gradient) -->
+            <svg class="absolute inset-0 w-full h-full animate-spin-smooth" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(59,130,246,0.12)" stroke-width="5"/>
+              <circle cx="80" cy="80" r="70" fill="none"
+                      stroke="url(#loginBlueGrad)" stroke-width="5"
+                      stroke-linecap="round"
+                      stroke-dasharray="280"
+                      stroke-dashoffset="100"
+                      transform="rotate(-90 80 80)"/>
+              <defs>
+                <linearGradient id="loginBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#06b6d4"/>
+                  <stop offset="50%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#818cf8"/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Inner Counter-rotating thin ring -->
+            <svg class="absolute animate-spin-reverse" viewBox="0 0 160 160"
+                 style="width:85%;height:85%;top:7.5%;left:7.5%;">
+              <circle cx="80" cy="80" r="70" fill="none"
+                      stroke="rgba(99,102,241,0.25)" stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-dasharray="90 350"
+                      transform="rotate(-90 80 80)"/>
+            </svg>
+
+            <!-- Center Logo (circular, glowing) -->
+            <div class="relative z-10 w-28 h-28 rounded-full overflow-hidden border-2 border-blue-500/40 shadow-[0_0_40px_rgba(59,130,246,0.6)] bg-slate-900">
+              <img src="assets/logo_satori.png" alt="Satori Logo" class="w-full h-full object-cover">
+            </div>
+          </div>
           
           <!-- Text Sequence -->
-          <div class="mt-8 text-center animate-text-fade-in">
-            <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-pink-400 tracking-[0.3em] pl-[0.3em] drop-shadow-[0_0_30px_rgba(129,140,248,0.5)]">
+          <div class="mt-6 text-center animate-text-fade-in">
+            <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 tracking-[0.3em] pl-[0.3em] drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
               SATORI
             </h1>
             
@@ -138,10 +167,10 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
               悟りへようこそ
             </p>
             
-            <div class="mt-8 flex justify-center gap-1">
+            <div class="mt-8 flex justify-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-loading-dot-1"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-loading-dot-2"></span>
-              <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-loading-dot-3"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-loading-dot-2"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-loading-dot-3"></span>
             </div>
           </div>
         </div>
@@ -172,19 +201,19 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
       100% { transform: translateX(-100vw); opacity: 0; }
     }
     
-    .animate-spin-slow {
-      animation: spin 8s linear infinite;
+    .animate-spin-smooth {
+      animation: spinSmooth 1.2s linear infinite;
     }
-    @keyframes spin {
+    .animate-spin-reverse {
+      animation: spinReverse 2.5s linear infinite;
+    }
+    @keyframes spinSmooth {
+      0%   { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
-    .animate-logo-entrance {
-      animation: logoEntrance 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-    @keyframes logoEntrance {
-      0% { transform: scale(0.3) rotate(-45deg); opacity: 0; filter: blur(10px); }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); }
+    @keyframes spinReverse {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
     }
     
     .animate-text-fade-in {
