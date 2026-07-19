@@ -28,8 +28,52 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
       </div>
 
       <!-- Persistent Global Logo (Top Left) -->
-      <div class="fixed top-0 left-0 z-50 p-6 md:p-8 flex items-center gap-3 w-full bg-gradient-to-b from-slate-950/80 to-transparent">
-        <img src="assets/logo_satori.png" alt="Satori Logo" class="w-10 h-10 rounded-2xl shadow-lg shadow-indigo-500/30 object-cover border border-white/10">
+      <div class="fixed top-0 left-0 z-50 p-6 md:p-8 flex items-center gap-3 w-full bg-gradient-to-b from-slate-950/80 to-transparent overflow-hidden">
+
+        <!-- Shooting Star Ray (travels from logo to profile) -->
+        <div class="absolute top-1/2 left-[5rem] -translate-y-1/2 pointer-events-none z-40">
+          <div class="animate-shoot-ray">
+            <!-- Main bright head -->
+            <div class="relative flex items-center">
+              <div class="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_6px_rgba(96,165,250,1),0_0_30px_15px_rgba(59,130,246,0.7)]"></div>
+              <!-- Trailing tail -->
+              <div class="absolute right-full top-1/2 -translate-y-1/2 h-[2px] w-24 bg-gradient-to-l from-blue-400 via-cyan-300/60 to-transparent rounded-full blur-[1px]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spinning SVG Logo -->
+        <div class="relative flex-shrink-0 flex items-center justify-center w-12 h-12">
+          <!-- Outer spinning arc -->
+          <svg class="absolute inset-0 w-full h-full animate-logo-spin" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="21" fill="none" stroke="rgba(59,130,246,0.12)" stroke-width="2.5"/>
+            <circle cx="24" cy="24" r="21" fill="none"
+                    stroke="url(#dashLogoGrad)" stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-dasharray="84"
+                    stroke-dashoffset="30"
+                    transform="rotate(-90 24 24)"/>
+            <defs>
+              <linearGradient id="dashLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#06b6d4"/>
+                <stop offset="60%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#818cf8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <!-- Inner counter-rotating tiny ring -->
+          <svg class="absolute animate-logo-spin-reverse" viewBox="0 0 48 48" style="width:80%;height:80%;top:10%;left:10%">
+            <circle cx="24" cy="24" r="21" fill="none"
+                    stroke="rgba(99,102,241,0.3)" stroke-width="1.2"
+                    stroke-linecap="round"
+                    stroke-dasharray="20 100"
+                    transform="rotate(-90 24 24)"/>
+          </svg>
+          <!-- Logo image center -->
+          <img src="assets/logo_satori.png" alt="Satori Logo"
+               class="relative z-10 w-8 h-8 rounded-xl object-cover shadow-[0_0_12px_rgba(59,130,246,0.5)]">
+        </div>
+
         <div class="text-2xl font-black text-white tracking-tight drop-shadow-md">
           Satori
         </div>
@@ -46,9 +90,11 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
           </div>
 
           <!-- Profile Button -->
-          <a routerLink="/profile" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all shadow-sm flex items-center gap-2 font-bold">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            Profile
+          <a routerLink="/profile" class="relative px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all shadow-sm flex items-center gap-2 font-bold overflow-hidden">
+            <!-- Glow hit effect when ray lands -->
+            <div class="absolute inset-0 rounded-xl animate-profile-glow pointer-events-none"></div>
+            <svg class="w-4 h-4 text-emerald-400 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <span class="relative z-10">Profile</span>
           </a>
           
           <button (click)="logout()" class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white font-semibold transition-all hover:scale-105 active:scale-95 flex items-center gap-2 shadow-sm">
@@ -285,8 +331,50 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
       }
       /* Hide scrollbar for IE, Edge and Firefox */
       .scrollbar-hide {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+
+      /* Logo spin animations */
+      .animate-logo-spin {
+        animation: logoSpin 1.5s linear infinite;
+      }
+      .animate-logo-spin-reverse {
+        animation: logoSpinRev 3s linear infinite;
+      }
+      @keyframes logoSpin {
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @keyframes logoSpinRev {
+        0%   { transform: rotate(0deg); }
+        100% { transform: rotate(-360deg); }
+      }
+
+      /* Shooting star ray from logo to profile */
+      .animate-shoot-ray {
+        animation: shootRay 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        opacity: 0;
+      }
+      @keyframes shootRay {
+        0%   { transform: translateX(0px);   opacity: 0; }
+        5%   { opacity: 1; }
+        85%  { opacity: 1; }
+        95%  { transform: translateX(calc(100vw - 14rem)); opacity: 0.8; }
+        100% { transform: translateX(calc(100vw - 14rem)); opacity: 0; }
+      }
+
+      /* Profile button glow when ray hits */
+      .animate-profile-glow {
+        animation: profileGlow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        background: radial-gradient(ellipse at center, rgba(59,130,246,0.5) 0%, transparent 70%);
+        opacity: 0;
+      }
+      @keyframes profileGlow {
+        0%   { opacity: 0; }
+        88%  { opacity: 0; }
+        92%  { opacity: 1; }
+        100% { opacity: 0; }
       }
     </style>
   `
