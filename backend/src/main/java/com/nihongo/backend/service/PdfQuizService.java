@@ -27,7 +27,10 @@ public class PdfQuizService {
 
     public GeneratedQuiz generateQuizFromPdf(MultipartFile file, User user) throws Exception {
         String text = extractTextFromPdf(file.getInputStream());
-        
+        return generateQuizFromRawText(text, file.getOriginalFilename(), user);
+    }
+
+    public GeneratedQuiz generateQuizFromRawText(String text, String sourceName, User user) throws Exception {
         List<AnalyzerService.ExtractedWord> words = analyzerService.analyzeText(text);
         
         // Filter out words that are too short or lacking proper meaning/reading if possible.
@@ -43,7 +46,8 @@ public class PdfQuizService {
         Collections.shuffle(validWords);
         int limit = Math.min(10, validWords.size());
         
-        GeneratedQuiz quiz = new GeneratedQuiz(user, "Quiz from " + file.getOriginalFilename(), LocalDateTime.now());
+        String quizTitle = sourceName != null ? "Quiz from " + sourceName : "Quiz from custom text";
+        GeneratedQuiz quiz = new GeneratedQuiz(user, quizTitle, LocalDateTime.now());
         
         for (int i = 0; i < limit; i++) {
             AnalyzerService.ExtractedWord targetWord = validWords.get(i);

@@ -46,6 +46,28 @@ public class QuizController {
         }
     }
 
+    @PostMapping("/generate-from-text")
+    public ResponseEntity<?> generateFromText(@RequestBody java.util.Map<String, String> payload, Authentication authentication) {
+        if (authentication == null) return ResponseEntity.status(401).body("Unauthorized");
+        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        if (user == null) return ResponseEntity.status(401).body("User not found");
+
+        String text = payload.get("text");
+        String sourceName = payload.get("sourceName");
+
+        if (text == null || text.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Text is empty");
+        }
+
+        try {
+            GeneratedQuiz quiz = pdfQuizService.generateQuizFromRawText(text, sourceName, user);
+            return ResponseEntity.ok(quiz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error generating quiz: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/history")
     public ResponseEntity<?> getQuizHistory(Authentication authentication) {
         if (authentication == null) return ResponseEntity.status(401).body("Unauthorized");
