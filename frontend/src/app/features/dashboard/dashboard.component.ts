@@ -106,23 +106,51 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
 
       <main class="flex-grow flex flex-col justify-center px-6 md:px-12 pt-32 pb-16 w-full relative z-10 h-screen">
         
-        <!-- Hero Text -->
-        <div class="max-w-3xl mb-12 animate-fade-in-left">
-          <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-4 drop-shadow-2xl">
-            Master the <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-500">Language.</span>
+        <!-- Floating Glowing Kanji Background -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+          <span class="kanji-float kanji-1">語</span>
+          <span class="kanji-float kanji-2">学</span>
+          <span class="kanji-float kanji-3">悟</span>
+          <span class="kanji-float kanji-4">日</span>
+          <span class="kanji-float kanji-5">本</span>
+          <span class="kanji-float kanji-6">道</span>
+          <span class="kanji-float kanji-7">心</span>
+          <span class="kanji-float kanji-8">力</span>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-3xl mb-12 animate-fade-in-left">
+
+          <!-- Top Label -->
+          <div class="flex items-center gap-2 mb-5">
+            <span class="w-8 h-[2px] bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"></span>
+            <span class="text-xs font-bold tracking-[0.3em] text-cyan-400 uppercase">Japanese Learning Platform</span>
+          </div>
+
+          <!-- Main Headline -->
+          <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-5 leading-tight">
+            <span class="text-white drop-shadow-lg">あなたの</span>
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]">
+              日本語の旅
+            </span>
+            <span class="text-2xl md:text-3xl font-semibold text-slate-300 tracking-wide">Your Japanese Journey</span>
           </h1>
-          <p class="text-xl md:text-2xl text-slate-300 font-medium max-w-2xl drop-shadow-lg mb-8">
-            Immerse yourself in Japanese culture. Your personalized JLPT journey continues here.
+
+          <!-- Subtitle -->
+          <p class="text-base md:text-lg text-slate-400 font-medium max-w-xl mb-8 leading-relaxed">
+            Master JLPT from N5 to N1. Immerse in authentic passages, build vocabulary,<br class="hidden md:block"> and track your progress every day.
           </p>
           
-          <div class="flex gap-4">
-            <button routerLink="/passage-reader" class="px-8 py-4 rounded-full bg-white text-slate-900 font-black text-lg hover:bg-slate-200 transition-colors flex items-center gap-2 shadow-xl shadow-white/10 hover:scale-105 active:scale-95 duration-300">
-              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+          <!-- CTA Buttons -->
+          <div class="flex gap-3 flex-wrap">
+            <button routerLink="/passage-reader"
+              class="px-7 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base hover:from-cyan-400 hover:to-blue-500 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95 duration-200">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
               Start Studying
             </button>
-            <button (click)="openAbout()" class="px-8 py-4 rounded-full bg-slate-600/50 backdrop-blur-md text-white font-bold text-lg hover:bg-slate-500/50 transition-colors border border-slate-400/30 flex items-center gap-2 hover:scale-105 active:scale-95 duration-300">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <button (click)="openAbout()"
+              class="px-7 py-3 rounded-2xl bg-white/5 backdrop-blur-md text-white font-bold text-base hover:bg-white/10 transition-all border border-white/10 flex items-center gap-2 hover:scale-105 active:scale-95 duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               More Info
             </button>
           </div>
@@ -375,6 +403,33 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
         88%  { opacity: 0; }
         92%  { opacity: 1; }
         100% { opacity: 0; }
+      }
+
+      /* Floating Kanji characters */
+      .kanji-float {
+        position: absolute;
+        font-family: 'Noto Sans JP', 'Hiragino Sans', serif;
+        font-weight: 900;
+        color: rgba(96, 165, 250, 0.07);
+        text-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+        user-select: none;
+        animation: kanjiDrift linear infinite;
+      }
+      .kanji-1 { font-size: 9rem;  top: 8%;  left: 55%; animation-duration: 18s; animation-delay: 0s;   color: rgba(99,102,241,0.06); }
+      .kanji-2 { font-size: 6rem;  top: 55%; left: 70%; animation-duration: 22s; animation-delay: -5s;  color: rgba(34,211,238,0.06); }
+      .kanji-3 { font-size: 14rem; top: 15%; left: 80%; animation-duration: 26s; animation-delay: -3s;  color: rgba(96,165,250,0.05); }
+      .kanji-4 { font-size: 5rem;  top: 70%; left: 40%; animation-duration: 20s; animation-delay: -8s;  color: rgba(167,139,250,0.07); }
+      .kanji-5 { font-size: 11rem; top: 30%; left: 62%; animation-duration: 30s; animation-delay: -12s; color: rgba(34,211,238,0.04); }
+      .kanji-6 { font-size: 7rem;  top: 5%;  left: 90%; animation-duration: 24s; animation-delay: -2s;  color: rgba(99,102,241,0.06); }
+      .kanji-7 { font-size: 8rem;  top: 80%; left: 85%; animation-duration: 28s; animation-delay: -7s;  color: rgba(96,165,250,0.05); }
+      .kanji-8 { font-size: 5rem;  top: 45%; left: 48%; animation-duration: 16s; animation-delay: -4s;  color: rgba(167,139,250,0.06); }
+
+      @keyframes kanjiDrift {
+        0%   { transform: translateY(0px)   rotate(0deg);   opacity: 0.4; }
+        25%  { transform: translateY(-20px) rotate(2deg);   opacity: 0.7; }
+        50%  { transform: translateY(-10px) rotate(-1deg);  opacity: 0.5; }
+        75%  { transform: translateY(-25px) rotate(3deg);   opacity: 0.8; }
+        100% { transform: translateY(0px)   rotate(0deg);   opacity: 0.4; }
       }
     </style>
   `
