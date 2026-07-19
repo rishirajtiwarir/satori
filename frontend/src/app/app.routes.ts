@@ -12,5 +12,6 @@ export const routes: Routes = [
     { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
     { path: 'quiz', canActivate: [authGuard], loadComponent: () => import('./features/quiz/quiz.component').then(m => m.QuizComponent) },
     { path: 'leaderboard', canActivate: [authGuard], loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent) },
+    { path: 'previous-papers', canActivate: [authGuard], loadComponent: () => import('./features/previous-papers/previous-papers.component').then(m => m.PreviousPapersComponent) },
     { path: '**', redirectTo: 'dashboard' }
 ];

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { QuizService, QuizQuestion } from '../../core/services/quiz.service';
 import { SoundService } from '../../core/services/sound.service';
 import { AnimatedBackgroundComponent } from '../../shared/components/animated-background/animated-background.component';
@@ -120,7 +120,8 @@ export class QuizComponent implements OnInit {
 
   constructor(
     private quizService: QuizService,
-    private soundService: SoundService
+    private soundService: SoundService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -128,13 +129,36 @@ export class QuizComponent implements OnInit {
   }
 
   startQuiz() {
+    const quizId = this.route.snapshot.queryParamMap.get('id');
+    
+    if (quizId) {
+      this.quizService.getQuizById(Number(quizId)).subscribe({
+        next: (data) => {
+          if (data && data.length > 0) {
+            this.setupQuiz(data);
+          } else {
+            this.fallbackToMock();
+          }
+        },
+        error: () => this.fallbackToMock()
+      });
+    } else {
+      this.fallbackToMock();
+    }
+  }
+
+  fallbackToMock() {
     this.quizService.getMockQuizSession(5).subscribe(data => {
-      this.questions = data;
-      this.currentIndex = 0;
-      this.currentScore = 0;
-      this.quizComplete = false;
-      this.loadQuestion();
+      this.setupQuiz(data);
     });
+  }
+
+  setupQuiz(data: QuizQuestion[]) {
+    this.questions = data;
+    this.currentIndex = 0;
+    this.currentScore = 0;
+    this.quizComplete = false;
+    this.loadQuestion();
   }
 
   loadQuestion() {

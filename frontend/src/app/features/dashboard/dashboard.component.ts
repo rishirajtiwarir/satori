@@ -189,6 +189,29 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
               </div>
             </a>
 
+            <!-- Tool 1.5: Previous Papers -->
+            <a routerLink="/previous-papers" class="min-w-[220px] md:min-w-[260px] aspect-[16/10] rounded-3xl relative overflow-hidden group snap-start cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 shadow-2xl shadow-black/50 border border-white/10 bg-white/5 backdrop-blur-2xl">
+              <div class="absolute -inset-32 bg-gradient-to-br from-cyan-500/40 to-blue-500/40 opacity-0 group-hover:opacity-100 blur-[80px] transition-opacity duration-700"></div>
+              
+              <div class="absolute -top-2 -right-2 p-4 opacity-5 transform group-hover:scale-110 group-hover:opacity-15 group-hover:-rotate-6 transition-all duration-700">
+                <span class="text-6xl font-black text-white">紙</span>
+              </div>
+              
+              <div class="relative z-10 flex flex-col h-full justify-between p-4 md:p-6">
+                <!-- Icon Top -->
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 shadow-lg shadow-cyan-500/40 flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform duration-500">
+                  <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                
+                <!-- Text Bottom -->
+                <div class="flex flex-col mt-auto">
+                  <span class="px-2 py-1 md:px-3 md:py-1 bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 rounded-full text-[8px] md:text-[9px] font-bold uppercase tracking-widest backdrop-blur-md w-fit mb-2 md:mb-3 shadow-sm group-hover:bg-cyan-500/40 transition-colors">New feature</span>
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-1 md:mb-2 tracking-tight group-hover:text-cyan-300 transition-colors">Exam Papers</h3>
+                  <p class="text-slate-300 font-medium text-[10px] md:text-xs opacity-80 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300 leading-tight">Read PDFs & generate quizzes.</p>
+                </div>
+              </div>
+            </a>
+
             <!-- Tool 2: Dictionary -->
             <a routerLink="/dictionary" class="min-w-[220px] md:min-w-[260px] aspect-[16/10] rounded-3xl relative overflow-hidden group snap-start cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 shadow-2xl shadow-black/50 border border-white/10 bg-white/5 backdrop-blur-2xl">
               <div class="absolute -inset-32 bg-gradient-to-br from-indigo-500/40 to-purple-500/40 opacity-0 group-hover:opacity-100 blur-[80px] transition-opacity duration-700"></div>

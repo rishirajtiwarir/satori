@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { API_BASE_URL } from '../config/api.config';
 
 export interface QuizQuestion {
-  id: number;
+  id?: number;
   word: string;
   reading: string;
   meaning: string;
@@ -15,7 +18,9 @@ export interface QuizQuestion {
 })
 export class QuizService {
   
-  constructor() { }
+  private apiUrl = `${API_BASE_URL}/api/v1/quiz`;
+
+  constructor(private http: HttpClient) { }
 
   // Generate mock quiz data
   getMockQuizSession(count: number = 5): Observable<QuizQuestion[]> {
@@ -27,6 +32,29 @@ export class QuizService {
       { id: 5, word: '車', reading: 'くるま (Kuruma)', meaning: 'Car', options: ['Car', 'Train', 'Bicycle', 'Airplane'], correctOptionIndex: 0 }
     ];
     return of(mockData.slice(0, count));
+  }
+
+  generateQuizFromPdf(file: File): Observable<number> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<any>(`${this.apiUrl}/generate-from-pdf`, formData).pipe(
+      map(res => res.id)
+    );
+  }
+
+  getQuizById(id: number): Observable<QuizQuestion[]> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(res => {
+        return res.questions.map((q: any) => ({
+          id: q.id,
+          word: q.word,
+          reading: q.reading,
+          meaning: q.meaning,
+          options: [q.option1, q.option2, q.option3, q.option4],
+          correctOptionIndex: q.correctOptionIndex
+        }));
+      })
+    );
   }
 
   saveScore(score: number): void {
