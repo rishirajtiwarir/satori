@@ -5,6 +5,7 @@ import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AboutModalComponent } from '../../shared/components/about-modal/about-modal.component';
 import { AnimatedBackgroundComponent } from '../../shared/components/animated-background/animated-background.component';
+import { SoundService } from '../../core/services/sound.service';
 
 @Component({
   selector: 'app-login',
@@ -278,7 +279,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private soundService: SoundService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -329,6 +331,10 @@ export class LoginComponent implements OnInit {
           
           setTimeout(() => {
             this.step = 'animating';
+            
+            // Trigger the TTS voice and chime!
+            this.soundService.playWelcomeSequence();
+
             // Redirect after 3.2 seconds of animation
             setTimeout(() => {
               this.router.navigate(['/dashboard']);

@@ -98,4 +98,54 @@ export class SoundService {
       osc.stop(this.audioContext.currentTime + (i * 0.1) + 0.4);
     });
   }
+
+  // Play a welcome speech followed by a chime
+  playWelcomeSequence() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const msg = new SpeechSynthesisUtterance("Welcome to your Japanese journey. Discover your Satori.");
+      msg.lang = 'en-US';
+      msg.rate = 0.9; // Slightly slower for dramatic effect
+      msg.pitch = 1.1;
+      
+      msg.onend = () => {
+        // Play "Tun tun tana" chime after speech
+        this.playWelcomeChime();
+      };
+      
+      window.speechSynthesis.speak(msg);
+    } else {
+      // Fallback if no speech synthesis
+      this.playWelcomeChime();
+    }
+  }
+
+  private playWelcomeChime() {
+    if (this.audioContext.state === 'suspended') this.audioContext.resume();
+
+    // Tun (C5) - Tun (E5) - Tana (G5 -> C6)
+    const notes = [
+      { freq: 523.25, time: 0, duration: 0.3 },     // Tun (C5)
+      { freq: 659.25, time: 0.4, duration: 0.3 },   // Tun (E5)
+      { freq: 783.99, time: 0.8, duration: 0.2 },   // Ta (G5)
+      { freq: 1046.50, time: 1.0, duration: 0.5 }   // na (C6)
+    ];
+
+    notes.forEach(note => {
+      const osc = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.value = note.freq;
+      
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime + note.time);
+      gainNode.gain.linearRampToValueAtTime(0.4, this.audioContext.currentTime + note.time + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + note.time + note.duration);
+      
+      osc.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+      
+      osc.start(this.audioContext.currentTime + note.time);
+      osc.stop(this.audioContext.currentTime + note.time + note.duration);
+    });
+  }
 }
