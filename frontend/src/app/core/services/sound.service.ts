@@ -104,14 +104,19 @@ export class SoundService {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const voices = window.speechSynthesis.getVoices();
       
-      // Try to find a good female English voice (Zira, Google UK Female, Samantha, etc.)
+      // Try to find a good UK English female voice (Hazel, Google UK Female, etc.)
       let selectedVoice = voices.find(v => 
-        (v.lang.includes('en') && (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha') || v.name.includes('Victoria')))
+        v.lang.includes('en-GB') && (v.name.includes('Female') || v.name.includes('Hazel') || v.name.includes('Serena'))
       );
       
-      // Fallback to any English voice if a specific female one isn't found
+      // Fallback to any UK English voice
       if (!selectedVoice) {
-        selectedVoice = voices.find(v => v.lang.includes('en-US') || v.lang.includes('en-GB'));
+        selectedVoice = voices.find(v => v.lang.includes('en-GB'));
+      }
+      
+      // Ultimate fallback
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.lang.includes('en'));
       }
 
       const speakSentence = (text: string, onEnd?: () => void) => {
