@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { AboutModalComponent } from '../../shared/components/about-modal/about-modal.component';
 import { AnimatedBackgroundComponent } from '../../shared/components/animated-background/animated-background.component';
 import { SoundService } from '../../core/services/sound.service';
+import { SpeechService } from '../../core/services/speech.service';
 
 @Component({
   selector: 'app-login',
@@ -280,7 +281,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private soundService: SoundService
+    private soundService: SoundService,
+    private speechService: SpeechService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -332,13 +334,19 @@ export class LoginComponent implements OnInit {
           setTimeout(() => {
             this.step = 'animating';
             
-            // Trigger the TTS voice and chime!
-            this.soundService.playWelcomeSequence();
+            // Wait a tiny bit for the animation to start, then speak
+            setTimeout(() => {
+              // The SpeechService automatically picks the Japanese voice (from settings/fallback)
+              this.speechService.speak("Welcome to your Japanese journey. Discover your Satori.", () => {
+                // When speaking ends, play the chime
+                this.soundService.playWelcomeChime();
+              });
+            }, 500);
 
-            // Redirect after 3.2 seconds of animation
+            // Redirect after 4 seconds of animation (give enough time for voice + chime)
             setTimeout(() => {
               this.router.navigate(['/dashboard']);
-            }, 3200);
+            }, 4000);
           }, 800);
         },
         error: (err) => {

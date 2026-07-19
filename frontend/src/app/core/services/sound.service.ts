@@ -103,7 +103,16 @@ export class SoundService {
   playWelcomeSequence() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const msg = new SpeechSynthesisUtterance("Welcome to your Japanese journey. Discover your Satori.");
-      msg.lang = 'en-US';
+      
+      // Find a Japanese voice to give it the requested accent
+      const voices = window.speechSynthesis.getVoices();
+      const jpVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JP'));
+      if (jpVoice) {
+        msg.voice = jpVoice;
+      } else {
+        msg.lang = 'en-US';
+      }
+      
       msg.rate = 0.9; // Slightly slower for dramatic effect
       msg.pitch = 1.1;
       
@@ -119,7 +128,7 @@ export class SoundService {
     }
   }
 
-  private playWelcomeChime() {
+  public playWelcomeChime() {
     if (this.audioContext.state === 'suspended') this.audioContext.resume();
 
     // Tun (C5) - Tun (E5) - Tana (G5 -> C6)
