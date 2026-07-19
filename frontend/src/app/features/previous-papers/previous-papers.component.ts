@@ -250,9 +250,9 @@ export class PreviousPapersComponent implements OnInit {
         
         this.extractedText = fullText.trim();
         this.isExtracting = false;
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error parsing PDF:', err);
-        alert('Failed to extract text from PDF. It might be corrupted or protected.');
+        alert('Failed to extract text from PDF: ' + (err?.message || JSON.stringify(err) || err));
         this.isExtracting = false;
       }
     };
