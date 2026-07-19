@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { API_BASE_URL } from '../config/api.config';
@@ -22,6 +22,13 @@ export class QuizService {
 
   constructor(private http: HttpClient) { }
 
+  private getHeaders() {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
   // Generate mock quiz data
   getMockQuizSession(count: number = 5): Observable<QuizQuestion[]> {
     const mockData: QuizQuestion[] = [
@@ -37,13 +44,13 @@ export class QuizService {
   generateQuizFromPdf(file: File): Observable<number> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<any>(`${this.apiUrl}/generate-from-pdf`, formData).pipe(
+    return this.http.post<any>(`${this.apiUrl}/generate-from-pdf`, formData, { headers: this.getHeaders() }).pipe(
       map(res => res.id)
     );
   }
 
   getQuizById(id: number): Observable<QuizQuestion[]> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       map(res => {
         return res.questions.map((q: any) => ({
           id: q.id,
