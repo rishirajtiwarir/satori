@@ -13,5 +13,6 @@ export const routes: Routes = [
     { path: 'quiz', canActivate: [authGuard], loadComponent: () => import('./features/quiz/quiz.component').then(m => m.QuizComponent) },
     { path: 'leaderboard', canActivate: [authGuard], loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent) },
     { path: 'previous-papers', canActivate: [authGuard], loadComponent: () => import('./features/previous-papers/previous-papers.component').then(m => m.PreviousPapersComponent) },
+    { path: 'sensei-roleplay', canActivate: [authGuard], loadComponent: () => import('./features/ai-sensei/ai-sensei.component').then(m => m.AiSenseiComponent) },
     { path: '**', redirectTo: 'dashboard' }
 ];

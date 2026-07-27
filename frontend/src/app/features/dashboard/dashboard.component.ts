@@ -167,6 +167,32 @@ import { AnimatedBackgroundComponent } from '../../shared/components/animated-ba
           <div class="flex gap-4 overflow-x-auto pb-8 pt-4 snap-x snap-mandatory scrollbar-hide" style="scrollbar-width: none;">
             
             <!-- Tool 1: JLPT Analyzer -->
+            <!-- Tool 0: AI Sensei Roleplay -->
+            <a routerLink="/sensei-roleplay" class="min-w-[240px] md:min-w-[280px] aspect-[16/10] rounded-3xl relative overflow-hidden group snap-start cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 shadow-2xl shadow-pink-500/20 border border-pink-500/40 bg-gradient-to-br from-pink-950/40 via-purple-950/30 to-slate-900/80 backdrop-blur-2xl">
+              <div class="absolute -inset-32 bg-gradient-to-br from-pink-500/40 via-rose-500/40 to-purple-500/40 opacity-30 group-hover:opacity-100 blur-[80px] transition-opacity duration-700"></div>
+              
+              <div class="absolute -top-2 -right-2 p-4 opacity-10 transform group-hover:scale-110 group-hover:opacity-20 group-hover:-rotate-6 transition-all duration-700">
+                <span class="text-6xl font-black text-pink-300">師</span>
+              </div>
+              
+              <div class="relative z-10 flex flex-col h-full justify-between p-4 md:p-6">
+                <!-- Icon Top -->
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 shadow-lg shadow-pink-500/40 flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform duration-500 text-lg">
+                  🌸
+                </div>
+                
+                <!-- Text Bottom -->
+                <div class="flex flex-col mt-auto">
+                  <div class="flex items-center gap-1.5 mb-2 md:mb-3">
+                    <span class="px-2 py-1 md:px-3 md:py-1 bg-pink-500/30 border border-pink-400/40 text-pink-200 rounded-full text-[8px] md:text-[9px] font-extrabold uppercase tracking-widest backdrop-blur-md w-fit shadow-sm animate-pulse">🔥 New AI Roleplay</span>
+                  </div>
+                  <h3 class="text-xl md:text-2xl font-black text-white leading-tight mb-1 md:mb-2 tracking-tight group-hover:text-pink-300 transition-colors">Sakura Sensei</h3>
+                  <p class="text-slate-200 font-medium text-[10px] md:text-xs opacity-90 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all duration-300 leading-tight">Interactive Voice & Chat practice.</p>
+                </div>
+              </div>
+            </a>
+
+            <!-- Tool 1: N3 Analyzer -->
             <a routerLink="/passage-reader" class="min-w-[220px] md:min-w-[260px] aspect-[16/10] rounded-3xl relative overflow-hidden group snap-start cursor-pointer transition-all duration-500 hover:scale-[1.03] hover:-translate-y-2 shadow-2xl shadow-black/50 border border-white/10 bg-white/5 backdrop-blur-2xl">
               <div class="absolute -inset-32 bg-gradient-to-br from-rose-500/40 to-orange-500/40 opacity-0 group-hover:opacity-100 blur-[80px] transition-opacity duration-700"></div>
               
